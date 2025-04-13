@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:login/login.dart';
 
-class Page2 extends StatelessWidget {
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RecipeSearchScreen();
@@ -16,14 +17,35 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
   TextEditingController searchController = TextEditingController();
 
   List<Map<String, dynamic>> allRecipes = [
-    {'name': 'Omlet', 'details': ['Yumurta', 'Süt', 'Tuz']},
-    {'name': 'Menemen', 'details': ['Domates', 'Biber', 'Yumurta']},
-    {'name': 'Patates Kızartması', 'details': ['Patates', 'Yağ']},
-    {'name': 'Kek', 'details': ['Un', 'Şeker', 'Yumurta', 'Süt']},
+    {
+      'name': 'Omlet',
+      'details': ['Yumurta', 'Süt', 'Tuz']
+    },
+    {
+      'name': 'Menemen',
+      'details': ['Domates', 'Biber', 'Yumurta']
+    },
+    {
+      'name': 'Patates Kızartması',
+      'details': ['Patates', 'Yağ']
+    },
+    {
+      'name': 'Kek',
+      'details': ['Un', 'Şeker', 'Yumurta', 'Süt']
+    },
   ];
 
   List<String> allProducts = [
-    'Süt', 'Yumurta', 'Un', 'Domates', 'Yağ', 'Tuz', 'Şeker', 'Peynir', 'Zeytin', 'Maydanoz'
+    'Süt',
+    'Yumurta',
+    'Un',
+    'Domates',
+    'Yağ',
+    'Tuz',
+    'Şeker',
+    'Peynir',
+    'Zeytin',
+    'Maydanoz'
   ];
 
   List<String> selectedProducts = [];
@@ -64,7 +86,8 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
   void filterProducts(String query) {
     setState(() {
       filteredProducts = allProducts
-          .where((product) => product.toLowerCase().contains(query.toLowerCase()))
+          .where(
+              (product) => product.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -73,9 +96,26 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tarif Seçimi'),
-        titleTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+        title: Text(
+          'Tarif Seçimi',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: 20,
+          ),
+        ),
         backgroundColor: const Color(0xFF4CAF50),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.black),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -98,7 +138,8 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                   context: context,
                   isScrollControlled: true,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20)),
                   ),
                   builder: (context) {
                     return StatefulBuilder(
@@ -120,7 +161,9 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                                   onChanged: (value) {
                                     setModalState(() {
                                       filteredProducts = allProducts
-                                          .where((product) => product.toLowerCase().contains(value.toLowerCase()))
+                                          .where((product) => product
+                                              .toLowerCase()
+                                              .contains(value.toLowerCase()))
                                           .toList();
                                     });
                                   },
@@ -131,7 +174,8 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                                     children: filteredProducts.map((product) {
                                       return CheckboxListTile(
                                         title: Text(product),
-                                        value: selectedProducts.contains(product),
+                                        value:
+                                            selectedProducts.contains(product),
                                         onChanged: (bool? value) {
                                           toggleProduct(product);
                                           setModalState(() {});
@@ -199,7 +243,8 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                         children: selectedProducts.map((product) {
                           return Container(
                             margin: EdgeInsets.symmetric(horizontal: 5),
-                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -213,7 +258,8 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                                 SizedBox(width: 5),
                                 GestureDetector(
                                   onTap: () => toggleProduct(product),
-                                  child: Icon(Icons.close, color: Colors.black, size: 16),
+                                  child: Icon(Icons.close,
+                                      color: Colors.black, size: 16),
                                 ),
                               ],
                             ),
