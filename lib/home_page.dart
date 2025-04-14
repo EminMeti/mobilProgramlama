@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login/login.dart';
+import 'package:login/recipe_details.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -17,23 +18,32 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
   TextEditingController searchController = TextEditingController();
 
   List<Map<String, dynamic>> allRecipes = [
-    {
-      'name': 'Omlet',
-      'details': ['Yumurta', 'Süt', 'Tuz']
-    },
-    {
-      'name': 'Menemen',
-      'details': ['Domates', 'Biber', 'Yumurta']
-    },
-    {
-      'name': 'Patates Kızartması',
-      'details': ['Patates', 'Yağ']
-    },
-    {
-      'name': 'Kek',
-      'details': ['Un', 'Şeker', 'Yumurta', 'Süt']
-    },
-  ];
+  {
+    'name': 'Omlet',
+    'ingredients': ['2 adet Yumurta', '1 yemek kaşığı Süt', 'Tuz'],
+    'details': ['Yumurta', 'Süt', 'Tuz'],
+    'preparation': 'Yumurtaları bir kaba kırın, süt ve tuz ekleyerek çırpın. Tavada pişirin.'
+  },
+  {
+    'name': 'Menemen',
+    'ingredients': ['2 adet Domates', '1 adet Biber', '2 adet Yumurta'],
+    'details': ['Domates', 'Biber', 'Yumurta'],
+    'preparation': 'Biber ve domatesleri doğrayıp kavurun. Yumurtaları kırıp karıştırın.'
+  },
+  {
+    'name': 'Patates Kızartması',
+    'ingredients': ['2 adet Patates', '1 su bardağı Sıvı Yağ'],
+    'details': ['Patates', 'Yağ'],
+    'preparation': 'Patatesleri doğrayıp kızgın yağda kızartın.'
+  },
+  {
+    'name': 'Kek',
+    'ingredients': ['2 su bardağı Un', '1 su bardağı Şeker', '2 adet Yumurta', '1 su bardağı Süt'],
+    'details': ['Un', 'Şeker', 'Yumurta', 'Süt'],
+    'preparation': 'Tüm malzemeleri karıştırın. Yağlanmış kalıba döküp fırında pişirin.'
+  },
+];
+
 
   List<String> allProducts = [
     'Süt',
@@ -212,16 +222,29 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                     elevation: 3,
                     margin: EdgeInsets.symmetric(vertical: 5),
                     color: Colors.white,
-                    child: ListTile(
+                    child: ListTile( 
                       title: Text(
-                        filteredRecipes[index]['name']!,
+                        filteredRecipes[index]['name'],
                         style: TextStyle(color: Colors.black),
                       ),
                       subtitle: Text(
                         filteredRecipes[index]['details'].join(", "),
                         style: TextStyle(color: Colors.black),
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecipeDetails(
+                              recipeName: filteredRecipes[index]['name'],
+                              ingredients: List<String>.from(filteredRecipes[index]['ingredients']),
+                              preparation: filteredRecipes[index]['preparation'],
+                            ),
+                          ),
+                        );
+                      },
                     ),
+
                   );
                 },
               ),
