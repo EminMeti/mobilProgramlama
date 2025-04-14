@@ -16,34 +16,34 @@ class RecipeSearchScreen extends StatefulWidget {
 
 class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
   TextEditingController searchController = TextEditingController();
+  FocusNode focusNode = FocusNode();
 
   List<Map<String, dynamic>> allRecipes = [
-  {
-    'name': 'Omlet',
-    'ingredients': ['2 adet Yumurta', '1 yemek kaşığı Süt', 'Tuz'],
-    'details': ['Yumurta', 'Süt', 'Tuz'],
-    'preparation': 'Yumurtaları bir kaba kırın, süt ve tuz ekleyerek çırpın. Tavada pişirin.'
-  },
-  {
-    'name': 'Menemen',
-    'ingredients': ['2 adet Domates', '1 adet Biber', '2 adet Yumurta'],
-    'details': ['Domates', 'Biber', 'Yumurta'],
-    'preparation': 'Biber ve domatesleri doğrayıp kavurun. Yumurtaları kırıp karıştırın.'
-  },
-  {
-    'name': 'Patates Kızartması',
-    'ingredients': ['2 adet Patates', '1 su bardağı Sıvı Yağ'],
-    'details': ['Patates', 'Yağ'],
-    'preparation': 'Patatesleri doğrayıp kızgın yağda kızartın.'
-  },
-  {
-    'name': 'Kek',
-    'ingredients': ['2 su bardağı Un', '1 su bardağı Şeker', '2 adet Yumurta', '1 su bardağı Süt'],
-    'details': ['Un', 'Şeker', 'Yumurta', 'Süt'],
-    'preparation': 'Tüm malzemeleri karıştırın. Yağlanmış kalıba döküp fırında pişirin.'
-  },
-];
-
+    {
+      'name': 'Omlet',
+      'ingredients': ['2 adet Yumurta', '1 yemek kaşığı Süt', 'Tuz'],
+      'details': ['Yumurta', 'Süt', 'Tuz'],
+      'preparation': 'Yumurtaları bir kaba kırın, süt ve tuz ekleyerek çırpın. Tavada pişirin.'
+    },
+    {
+      'name': 'Menemen',
+      'ingredients': ['2 adet Domates', '1 adet Biber', '2 adet Yumurta'],
+      'details': ['Domates', 'Biber', 'Yumurta'],
+      'preparation': 'Biber ve domatesleri doğrayıp kavurun. Yumurtaları kırıp karıştırın.'
+    },
+    {
+      'name': 'Patates Kızartması',
+      'ingredients': ['2 adet Patates', '1 su bardağı Sıvı Yağ'],
+      'details': ['Patates', 'Yağ'],
+      'preparation': 'Patatesleri doğrayıp kızgın yağda kızartın.'
+    },
+    {
+      'name': 'Kek',
+      'ingredients': ['2 su bardağı Un', '1 su bardağı Şeker', '2 adet Yumurta', '1 su bardağı Süt'],
+      'details': ['Un', 'Şeker', 'Yumurta', 'Süt'],
+      'preparation': 'Tüm malzemeleri karıştırın. Yağlanmış kalıba döküp fırında pişirin.'
+    },
+  ];
 
   List<String> allProducts = [
     'Süt',
@@ -96,8 +96,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
   void filterProducts(String query) {
     setState(() {
       filteredProducts = allProducts
-          .where(
-              (product) => product.toLowerCase().contains(query.toLowerCase()))
+          .where((product) => product.toLowerCase().startsWith(query.toLowerCase()))
           .toList();
     });
   }
@@ -132,24 +131,14 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
         child: Column(
           children: [
             SizedBox(height: 20),
-            TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                labelText: 'Ürün ara...',
-                prefixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+            GestureDetector(
               onTap: () {
+                FocusScope.of(context).requestFocus(focusNode); // Klavye açılmasını engelle
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                   ),
                   builder: (context) {
                     return StatefulBuilder(
@@ -161,6 +150,8 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                             child: Column(
                               children: [
                                 TextField(
+                                  controller: searchController,
+                                  focusNode: focusNode,
                                   decoration: InputDecoration(
                                     labelText: 'Ürün ara...',
                                     prefixIcon: Icon(Icons.search),
@@ -169,13 +160,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                                     ),
                                   ),
                                   onChanged: (value) {
-                                    setModalState(() {
-                                      filteredProducts = allProducts
-                                          .where((product) => product
-                                              .toLowerCase()
-                                              .contains(value.toLowerCase()))
-                                          .toList();
-                                    });
+                                    filterProducts(value);
                                   },
                                 ),
                                 SizedBox(height: 10),
@@ -184,11 +169,10 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                                     children: filteredProducts.map((product) {
                                       return CheckboxListTile(
                                         title: Text(product),
-                                        value:
-                                            selectedProducts.contains(product),
+                                        value: selectedProducts.contains(product),
                                         onChanged: (bool? value) {
                                           toggleProduct(product);
-                                          setModalState(() {});
+                                          setModalState(() {}); // Modal'ı güncelle
                                         },
                                       );
                                     }).toList(),
@@ -198,6 +182,10 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                                   alignment: Alignment.bottomRight,
                                   child: ElevatedButton(
                                     onPressed: () {
+                                      setState(() {
+                                        filteredProducts = List.from(allProducts);
+                                        searchController.clear(); // Sıfırlama
+                                      });
                                       Navigator.pop(context);
                                     },
                                     child: Text('Kaydet'),
@@ -212,6 +200,18 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                   },
                 );
               },
+              child: TextField(
+                enabled: false,
+                decoration: InputDecoration(
+                  labelText: 'Ürün ara...',
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
             ),
             SizedBox(height: 10),
             Expanded(
@@ -222,7 +222,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                     elevation: 3,
                     margin: EdgeInsets.symmetric(vertical: 5),
                     color: Colors.white,
-                    child: ListTile( 
+                    child: ListTile(
                       title: Text(
                         filteredRecipes[index]['name'],
                         style: TextStyle(color: Colors.black),
@@ -244,7 +244,6 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                         );
                       },
                     ),
-
                   );
                 },
               ),
@@ -266,8 +265,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                         children: selectedProducts.map((product) {
                           return Container(
                             margin: EdgeInsets.symmetric(horizontal: 5),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -281,8 +279,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                                 SizedBox(width: 5),
                                 GestureDetector(
                                   onTap: () => toggleProduct(product),
-                                  child: Icon(Icons.close,
-                                      color: Colors.black, size: 16),
+                                  child: Icon(Icons.close, color: Colors.black, size: 16),
                                 ),
                               ],
                             ),

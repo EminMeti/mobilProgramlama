@@ -71,49 +71,87 @@ class _MyHomePageState extends State<LoginPage> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
+                  // E-posta TextField
                   TextField(
                     controller: emailController,
+                    style: const TextStyle(color: Colors.black), // Yazıyı siyah yapıyoruz
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: 'E-Posta',
-                      border: OutlineInputBorder(),
+                      labelStyle: const TextStyle(color: Colors.black), // Etiket siyah
                       filled: true,
                       fillColor: Colors.white.withOpacity(0.8),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Şifre',
                       border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.8),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black), // Odaklandığında siyah
+                      ),
                     ),
-                    obscureText: true,
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _checkLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  // Şifre TextField
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    style: const TextStyle(color: Colors.black), // Yazıyı siyah yapıyoruz
+                    decoration: InputDecoration(
+                      labelText: 'Şifre',
+                      labelStyle: const TextStyle(color: Colors.black), // Etiket siyah
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.8),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black), // Odaklandığında siyah
+                      ),
                     ),
-                    child: const Text('Giriş Yap'),
                   ),
-                  const SizedBox(height: 10),
-                  // Kayıt Ol Butonu
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SignUpPage()),
-                      );
-                    },
-                    child: const Text(
-                      'Kayıt Ol',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
+                  const SizedBox(height: 30),
+                  // Butonları yan yana koymak için Row widget'ı kullanalım
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // Giriş Yap Butonu
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _checkLogin,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                            side: BorderSide(
+                              color: const Color.fromARGB(255, 0, 0, 0),
+                              width: 2,
+                            ),
+                          ),
+                          child: const Text(
+                            'Giriş Yap',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Kayıt Ol Butonu
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SignUpPage()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                            side: BorderSide(
+                              color: const Color.fromARGB(255, 0, 0, 0),
+                              width: 2,
+                            ),
+                          ),
+                          child: const Text(
+                            'Kayıt Ol',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
